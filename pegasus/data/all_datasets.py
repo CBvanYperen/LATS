@@ -50,4 +50,5 @@ def get_dataset(input_pattern, shuffle_files):
     build_name = prefix
     builder = datasets.get_dataset(prefix)
   dataset, _ = builder.build(input_pattern, shuffle_files)
+  print(dataset)
   return dataset
