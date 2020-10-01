@@ -117,6 +117,34 @@ def transformer_params(patterns, param_overrides):
   return hparams
 
 
+@registry.register("cnn_dailymail_myData_sorted")
+def cnn_dailymail(param_overrides):
+  return transformer_params(
+      {
+          "train_pattern": "tfrecord:pegasus/data/myData/cnn_sorted.tfrecord",
+          "dev_pattern": "tfds:cnn_dailymail/plain_text-validation",
+          "test_pattern": "tfds:cnn_dailymail/plain_text-test",
+          "max_input_len": 1024,
+          "max_output_len": 128,
+          "train_steps": 2000,
+          "learning_rate": 0.001,
+          "batch_size": 2,
+      }, param_overrides)
+
+@registry.register("cnn_dailymail_myData_unsorted")
+def cnn_dailymail(param_overrides):
+  return transformer_params(
+      {
+          "train_pattern": "tfds:cnn_dailymail/plain_text-train",
+          "dev_pattern": "tfds:cnn_dailymail/plain_text-validation",
+          "test_pattern": "tfds:cnn_dailymail/plain_text-test",
+          "max_input_len": 1024,
+          "max_output_len": 128,
+          "train_steps": 2000,
+          "learning_rate": 0.0005,
+          "batch_size": 2,
+      }, param_overrides)
+
 @registry.register("cnn_dailymail_transformer")
 def cnn_dailymail(param_overrides):
   return transformer_params(
@@ -129,6 +157,79 @@ def cnn_dailymail(param_overrides):
           "train_steps": 210000,
           "learning_rate": 0.001,
           "batch_size": 8,
+      }, param_overrides)
+
+@registry.register("cnn_dailymail_transformer_low_0")
+def cnn_dailymail(param_overrides):
+  return transformer_params(
+      {
+          "train_pattern": "tfds:cnn_dailymail/plain_text-train-take_0",
+          "dev_pattern": "tfds:cnn_dailymail/plain_text-validation",
+          "test_pattern": "tfds:cnn_dailymail/plain_text-test",
+          "max_input_len": 1024,
+          "max_output_len": 128,
+          "train_steps": 2000,
+          "learning_rate": 0.0005,
+          "batch_size": 2,
+      }, param_overrides)
+
+
+@registry.register("cnn_dailymail_transformer_low_10")
+def cnn_dailymail(param_overrides):
+  return transformer_params(
+      {
+          "train_pattern": "tfds:cnn_dailymail/plain_text-train-take_10",
+          "dev_pattern": "tfds:cnn_dailymail/plain_text-validation",
+          "test_pattern": "tfds:cnn_dailymail/plain_text-test",
+          "max_input_len": 1024,
+          "max_output_len": 128,
+          "train_steps": 2000,
+          "learning_rate": 0.0005,
+          "batch_size": 2,
+      }, param_overrides)
+
+
+@registry.register("cnn_dailymail_transformer_low_100")
+def cnn_dailymail(param_overrides):
+  return transformer_params(
+      {
+          "train_pattern": "tfds:cnn_dailymail/plain_text-train-take_100",
+          "dev_pattern": "tfds:cnn_dailymail/plain_text-validation",
+          "test_pattern": "tfds:cnn_dailymail/plain_text-test",
+          "max_input_len": 1024,
+          "max_output_len": 128,
+          "train_steps": 2000,
+          "learning_rate": 0.0005,
+          "batch_size": 2,
+      }, param_overrides)
+
+@registry.register("cnn_dailymail_transformer_low_1000")
+def cnn_dailymail(param_overrides):
+  return transformer_params(
+      {
+          "train_pattern": "tfds:cnn_dailymail/plain_text-train-take_1000",
+          "dev_pattern": "tfds:cnn_dailymail/plain_text-validation",
+          "test_pattern": "tfds:cnn_dailymail/plain_text-test",
+          "max_input_len": 1024,
+          "max_output_len": 128,
+          "train_steps": 2000,
+          "learning_rate": 0.0005,
+          "batch_size": 2,
+      }, param_overrides)
+
+
+@registry.register("cnn_dailymail_transformer_low_10000")
+def cnn_dailymail(param_overrides):
+  return transformer_params(
+      {
+          "train_pattern": "tfds:cnn_dailymail/plain_text-train-take_10000",
+          "dev_pattern": "tfds:cnn_dailymail/plain_text-validation",
+          "test_pattern": "tfds:cnn_dailymail/plain_text-test",
+          "max_input_len": 1024,
+          "max_output_len": 128,
+          "train_steps": 2000,
+          "learning_rate": 0.0005,
+          "batch_size": 2,
       }, param_overrides)
 
 
@@ -159,6 +260,21 @@ def aeslc_transformer(param_overrides):
           "train_steps": 32000,
           "learning_rate": 0.0001,
           "batch_size": 8,
+      }, param_overrides)
+
+
+@registry.register("aeslc_transformer_low")
+def aeslc_transformer(param_overrides):
+  return transformer_params(
+      {
+          "train_pattern": "tfds:aeslc-train-take_10",
+          "dev_pattern": "tfds:aeslc-validation",
+          "test_pattern": "tfds:aeslc-test",
+          "max_input_len": 512,
+          "max_output_len": 32,
+          "train_steps": 2000,
+          "learning_rate": 0.0005,
+          "batch_size": 4,
       }, param_overrides)
 
 
