@@ -39,11 +39,25 @@ def get_input_fn(parser_fn,
   def input_fn(params):
     """Input function."""
     dataset = all_datasets.get_dataset(input_pattern, training)
+    print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& This is the dataset &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+    print(dataset)
+    print(type(dataset))
+    
+    tf.config.experimental_run_functions_eagerly(True)
+    def show_batch(dataset):
+      for batch, label in dataset.take(1):
+        for key, value in batch.items():
+          print("{:20s}: {}".format(key,value.numpy()))
+
+    print(show_batch(dataset))
+    
+    tf.config.experimental_run_functions_eagerly(False)
+    
     dataset = dataset.map(parser, num_parallel_calls=parallelism)
-    dataset = dataset.unbatch()
+    dataset = dataset.unbatch() #Splits elements of a dataset into multiple elements.
     if training:
-      dataset = dataset.shuffle(10000)
-      dataset = dataset.repeat()
+#       dataset = dataset.shuffle(10000) #Randomly shuffles the elements of this dataset.
+      dataset = dataset.repeat(100) #Repeats this dataset count times. The default behavior (if count is None or -1) is for the dataset be repeated indefinitely.
     dataset = dataset.padded_batch(
         params["batch_size"],
         padded_shapes=shapes,
