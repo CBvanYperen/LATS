@@ -19,9 +19,11 @@ import pickle
 # Get a list of all the .story files that are part of the CNN Dataset. (Total: 92.579)
 
 CNN_DM_FILES = 'path/to/cnn_files/*.story'
+
+# Set these variables
 SAMPLE_SIZE = 1000
 BUCKET_SIZE = 200
-TRAINING_PER = 0.9
+TRAINING_PER = 0.9  # Percentage of the sample set treated as training data, the remainder will be the validation set.
 SORTING_METHOD = "provide_name"
 DATASET_NAME = "cnn"
 

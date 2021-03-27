@@ -1,3 +1,9 @@
+Please follow the following steps in order to replicate the results presented in this paper:
+1. Set up the code to run PEGASUS
+2. Download and sort dataset used for our results
+3. Use our datasets in the PEGASUS model
+
+Details for each step are outlined below
 # PEGASUS library
 
 Pre-training with Extracted Gap-sentences for Abstractive SUmmarization
