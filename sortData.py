@@ -18,14 +18,14 @@ import pickle
 
 # Get a list of all the .story files that are part of the CNN Dataset. (Total: 92.579)
 
-CNN_DM_FILES = 'path/to/cnn_files/*.story'
+CNN_DM_FILES = 'path/to/cnn_dm_files/*.story'
 
 # Set these variables
 SAMPLE_SIZE = 1000
 BUCKET_SIZE = 200
 TRAINING_PER = 0.9  # Percentage of the sample set treated as training data, the remainder will be the validation set.
-SORTING_METHOD = "provide_name"
-DATASET_NAME = "cnn"
+SORTING_METHOD = "sorting_method_name"
+DATASET_NAME = "cnndm"
 
 def load_and_save_files(files_path, file_name):
     """Read all .story files in file path and save as .data file with pickle
@@ -54,14 +54,11 @@ def load_and_save_files(files_path, file_name):
                 all_files = []
 
 def main():
-    # load_and_save_files(CNN_FILES, "cnn_all_files")
-    # load_and_save_files(DM_FILES, "dm_all_files")
+    # load_and_save_files(CNN_DM_FILES, "cnn_all_files")
     print("Loading list from pickle...")
-    with open('../thesis/cnn_all_files.pkl', 'rb') as all_files:
+    with open('../thesis/cnn_dm_all_files.pkl', 'rb') as all_files:
         all_files_with_content = pickle.load(all_files)
     print("Finished loading list")
-
-    # print(all_files_with_content)
 
     # gen_sum_stats(all_files_with_content)
 

@@ -4,9 +4,9 @@ Please follow the following steps in order to replicate the results presented in
 3. Use our datasets in the PEGASUS model
 
 Details for each step are outlined below:
-# Set up the code to run PEGASUS
-Please follow the instructions below which can additionally be found [here](https://github.com/google-research/pegasus/blob/master/README.md)
-## PEGASUS library
+# 1. Set up the code to run PEGASUS
+Please follow the instructions below which can additionally be found [here](https://github.com/google-research/pegasus/blob/master/README.md).
+## 1.1 PEGASUS library
 
 Pre-training with Extracted Gap-sentences for Abstractive SUmmarization
 Sequence-to-sequence models, or PEGASUS, uses self-supervised objective Gap
@@ -24,40 +24,7 @@ If you use this code or these models, please cite the following paper:
     primaryClass={cs.CL}
 }
 ```
-
-## Results update
-
-We train a pegasus model with sampled gap sentence ratios on both C4 and HugeNews, and stochastically sample important sentences. The updated the results are reported in this table.
-
-| dataset | C4 | HugeNews | Mixed & Stochastic|
-| ---- | ---- | ---- | ----|
-| xsum | 45.20/22.06/36.99 | 47.21/24.56/39.25 | 47.60/24.83/39.64|
-| cnn_dailymail | 43.90/21.20/40.76 | 44.17/21.47/41.11 | 44.16/21.56/41.30|
-| newsroom | 45.07/33.39/41.28 | 45.15/33.51/41.33 | 45.98/34.20/42.18|
-| multi_news | 46.74/17.95/24.26 | 47.52/18.72/24.91 | 47.65/18.75/24.95|
-| gigaword | 38.75/19.96/36.14 | 39.12/19.86/36.24 | 39.65/20.47/36.76|
-| wikihow | 43.07/19.70/34.79 | 41.35/18.51/33.42 | 46.39/22.12/38.41 *|
-| reddit_tifu | 26.54/8.94/21.64 | 26.63/9.01/21.60 | 27.99/9.81/22.94|
-| big_patent | 53.63/33.16/42.25 | 53.41/32.89/42.07 | 52.29/33.08/41.66 *|
-| arxiv | 44.70/17.27/25.80 | 44.67/17.18/25.73 | 44.21/16.95/25.67|
-| pubmed | 45.49/19.90/27.69 | 45.09/19.56/27.42 | 45.97/20.15/28.25|
-| aeslc | 37.69/21.85/36.84 | 37.40/21.22/36.45 | 37.68/21.25/36.51|
-| billsum | 57.20/39.56/45.80 | 57.31/40.19/45.82 | 59.67/41.58/47.59|
-
-The "Mixed & Stochastic" model has the following changes:
-- trained on both C4 and HugeNews (dataset mixture is weighted by their number of examples). 
-- trained for 1.5M instead of 500k (we observe slower convergence on pretraining perplexity).
-- the model uniformly sample a gap sentence ratio between 15% and 45%.
-- importance sentences are sampled using a 20% uniform noise to importance scores.
-- the sentencepiece tokenizer is updated to be able to encode newline character.
-
-
-(*) the numbers of wikihow and big_patent datasets are not comparable because of change in tokenization and data:
-- wikihow dataset contains newline characters which is useful for paragraph segmentation, the C4 and HugeNews model's sentencepiece tokenizer doesn't encode newline and loose this information.
-- we update the BigPatent dataset to preserve casing, some format cleanings are also changed, please refer to change in TFDS.
-
-
-## Setup
+## 1.2 Setup
 
 ### create an instance on google cloud with GPU (optional)
 
@@ -96,7 +63,7 @@ gsutil cp -r gs://pegasus_ckpt/ ckpt/
 
 ```
 
-## Finetuning on downstream datasets
+## 1.3 Finetuning on downstream datasets
 
 ### on existing dataset
 
@@ -177,14 +144,31 @@ Several types of output files can be found in `model_dir`
     inputs/outputs.
 
 
-## Pre-training
+# 2. Download and sort dataset used for our results
+User @JafferWilson has provided the processed data, which you can download [here](https://github.com/JafferWilson/Process-Data-of-CNN-DailyMail). (See discussion [here](https://github.com/abisee/cnn-dailymail/issues/9) about why the original authors do not provide it themselves).
 
-Pretraining (on C4 or any other corpus) requires a customly built tensorflow that includes ops for on-the-fly parsing that processes raw text document into model inputs and targets ids. Please refer to pegasus/ops/pretrain_parsing_ops.cc and pegasus/data/parsers.py for details.
+1. Download the CNN_STORIES_TOKENIZED and DM_STORIES_TOKENIZED [here](https://github.com/JafferWilson/Process-Data-of-CNN-DailyMail).
 
-# Download and sort dataset used for our results
-The instructions to download the CNN/DM dataset can be found [here](https://github.com/abisee/cnn-dailymail) and relevant sections are copied below.
+2. Extract the downloaded folders and move all ".story" folders into a single folder.
 
-## Option 1: download the processed data
-User @JafferWilson has provided the processed data, which you can download [here](https://github.com/JafferWilson/Process-Data-of-CNN-DailyMail). (See discussion [here](https://github.com/abisee/cnn-dailymail/issues/9) about why we do not provide it ourselves).
+3. Use "Sortdata.py" to create sorted datasets, see further instructions in code comments.
 
-Download  [here](https://github.com/JafferWilson/Process-Data-of-CNN-DailyMail)
+# 3. Use created datasets in the PEGASUS model
+Please follow the instructions in step "1.3 Finetuning on downstream datasets", to finetune the provided pre-trained PEGASUS model on the created datasets. Further instructions can be found [here](https://github.com/google-research/pegasus).
+
+An example registry is as follows:
+```
+@registry.register("cnndm_CLOP_complexity_bucket_1")
+def cnn_dailymail(param_overrides):
+  return transformer_params(
+      {
+          "train_pattern": "tfrecord:path/to/dataset/cnndm_CLOP_complexity_bucket_1/cnndm_CLOP_complexity_bucket_1_train.tfrecord",
+          "dev_pattern": "tfrecord:path/to/dataset/cnndm_CLOP_complexity_bucket_1/cnndm_CLOP_complexity_bucket_1_validate.tfrecord",
+          "test_pattern": "tfds:cnn_dailymail/plain_text-test",
+          "max_input_len": 1024,
+          "max_output_len": 128,
+          "train_steps": 500,
+          "learning_rate": 0.001,
+          "batch_size": 2,
+      }, param_overrides)
+```
