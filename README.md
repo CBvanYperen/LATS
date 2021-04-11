@@ -3,8 +3,10 @@ Please follow the following steps in order to replicate the results presented in
 2. Download and sort dataset used for our results
 3. Use our datasets in the PEGASUS model
 
-Details for each step are outlined below
-# PEGASUS library
+Details for each step are outlined below:
+# Set up the code to run PEGASUS
+Please follow the instructions below which can additionally be found [here](https://github.com/google-research/pegasus/blob/master/README.md)
+## PEGASUS library
 
 Pre-training with Extracted Gap-sentences for Abstractive SUmmarization
 Sequence-to-sequence models, or PEGASUS, uses self-supervised objective Gap
@@ -23,7 +25,7 @@ If you use this code or these models, please cite the following paper:
 }
 ```
 
-# Results update
+## Results update
 
 We train a pegasus model with sampled gap sentence ratios on both C4 and HugeNews, and stochastically sample important sentences. The updated the results are reported in this table.
 
@@ -55,9 +57,9 @@ The "Mixed & Stochastic" model has the following changes:
 - we update the BigPatent dataset to preserve casing, some format cleanings are also changed, please refer to change in TFDS.
 
 
-# Setup
+## Setup
 
-## create an instance on google cloud with GPU (optional)
+### create an instance on google cloud with GPU (optional)
 
 Please create a project first and create an instance
 
@@ -73,7 +75,7 @@ gcloud compute instances create \
   --maintenance-policy TERMINATE --restart-on-failure
 ```
 
-## install library and dependencies
+### install library and dependencies
 
 Clone library on github and install requirements.
 
@@ -94,9 +96,9 @@ gsutil cp -r gs://pegasus_ckpt/ ckpt/
 
 ```
 
-# Finetuning on downstream datasets
+## Finetuning on downstream datasets
 
-## on existing dataset
+### on existing dataset
 
 Finetune on an existing dataset `aeslc`.
 
@@ -120,7 +122,7 @@ python3 pegasus/bin/evaluate.py --params=aeslc_transformer \
 Note that the above example is using a single GPU so the batch_size is much smaller
 than the results reported in the paper.
 
-## add new finetuning dataset
+### add new finetuning dataset
 
 Two types of dataset format are supported: [TensorFlow Datasets (TFDS)](https://www.tensorflow.org/datasets) or TFRecords.
 
@@ -148,7 +150,7 @@ def my_param(param_overrides):
       }, param_overrides)
 ```
 
-## Evaluation metrics.
+### Evaluation metrics.
 
 Evaluation results can be found in `mode_dir`. Summarization metrics are automatically
 calculated for each evaluation point.
@@ -175,7 +177,14 @@ Several types of output files can be found in `model_dir`
     inputs/outputs.
 
 
-# Pre-training
+## Pre-training
 
 Pretraining (on C4 or any other corpus) requires a customly built tensorflow that includes ops for on-the-fly parsing that processes raw text document into model inputs and targets ids. Please refer to pegasus/ops/pretrain_parsing_ops.cc and pegasus/data/parsers.py for details.
 
+# Download and sort dataset used for our results
+The instructions to download the CNN/DM dataset can be found [here](https://github.com/abisee/cnn-dailymail) and relevant sections are copied below.
+
+## Option 1: download the processed data
+User @JafferWilson has provided the processed data, which you can download [here](https://github.com/JafferWilson/Process-Data-of-CNN-DailyMail). (See discussion [here](https://github.com/abisee/cnn-dailymail/issues/9) about why we do not provide it ourselves).
+
+Download  [here](https://github.com/JafferWilson/Process-Data-of-CNN-DailyMail)
