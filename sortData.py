@@ -9,23 +9,24 @@ import tensorflow as tf
 from tqdm import tqdm
 import nltk
 from nltk.stem import WordNetLemmatizer
-# nltk.download('wordnet')
-# nltk.download('stopwords')
 from textaugment import EDA
 import statistics
 import matplotlib.pyplot as plt
 import pickle
 
-# Get a list of all the .story files that are part of the CNN Dataset. (Total: 92.579)
+# Uncomment lines below the first time running this code to download the necessary NLTK datasets
+# nltk.download('wordnet')
+# nltk.download('stopwords')
 
+# Get a list of all the .story files that are part of the CNN/DM Dataset.
 CNN_DM_FILES = 'path/to/cnn_dm_files/*.story'
 
 # Set these variables
-SAMPLE_SIZE = 1000
-BUCKET_SIZE = 200
+SAMPLE_SIZE = 1000 # The total amount of samples in the dataset
+BUCKET_SIZE = 200 # The amount of samples in each individual bucket
 TRAINING_PER = 0.9  # Percentage of the sample set treated as training data, the remainder will be the validation set.
-SORTING_METHOD = "sorting_method_name"
-DATASET_NAME = "cnndm"
+SORTING_METHOD = "sorting_method_name" # The name of the sorting method, for user reference only
+DATASET_NAME = "cnndm" # The name of the dataset, for user reference only
 
 def load_and_save_files(files_path, file_name):
     """Read all .story files in file path and save as .data file with pickle
@@ -38,7 +39,6 @@ def load_and_save_files(files_path, file_name):
             Nothing
 
         """
-
     all_files = []
     files = get_files(files_path)
     with open(file_name + '.pkl', 'wb') as file_list:
@@ -53,38 +53,42 @@ def load_and_save_files(files_path, file_name):
                 pickle.dump(all_files, file_list)
                 all_files = []
 
+# Uncomment lines as required in the main() function below
 def main():
     # load_and_save_files(CNN_DM_FILES, "cnn_all_files")
-    print("Loading list from pickle...")
+    # print("Loading list from pickle...")
     with open('../thesis/cnn_dm_all_files.pkl', 'rb') as all_files:
         all_files_with_content = pickle.load(all_files)
     print("Finished loading list")
 
+    # Generate summary statistics for whole dataset
     # gen_sum_stats(all_files_with_content)
 
     print("Sorting files...")
-    random.seed(42)
-    # gen_sum_stats(random.sample(all_files_with_content, 10))
-    # sorted_files = augmentEDA(random.sample(all_files_with_content, SAMPLE_SIZE))
+    # Generate summary statistics for sample size of dataset
+    # gen_sum_stats(random.sample(all_files_with_content, SAMPLE_SIZE))
+
+    # When not using EDA, uncomment a line below to use that particular sorting method
     # sorted_files = sort_length(random.sample(all_files_with_content, SAMPLE_SIZE))
     # sorted_files = sort_reduction(random.sample(all_files_with_content, SAMPLE_SIZE))
-    sorted_files = sortCl(random.sample(all_files_with_content, SAMPLE_SIZE))
+    # sorted_files = sortCl(random.sample(all_files_with_content, SAMPLE_SIZE))
     # sorted_files = random.sample(all_files_with_content, SAMPLE_SIZE)
 
+    # When using EDA, uncomment lines below
     # augmented_files = augmentEDA(random.sample(all_files_with_content, SAMPLE_SIZE))
     # sorted_files = sortCl(augmented_files)
 
-    # print(all_files)
-
-    # all_files = all_files[0]
-
+    # Use code below to create buckets for the One-Pass curriculum
     # create_buckets(sorted_files, BUCKET_SIZE, TRAINING_PER, SORTING_METHOD, DATASET_NAME)
+    # print("Finished creating buckets")
+    
+    # Use code below to create buckets for the Baby-Steps curriculum
     # create_CLBS_buckets(sorted_files, BUCKET_SIZE, TRAINING_PER, SORTING_METHOD, DATASET_NAME)
     # print("Finished creating buckets")
 
+    # Use the code below to prepare data into a .csv file and subsequently transform it to a .tfrecord file that can be used in the PEGASUS model
     # print("preparing data...")
     # prepare_data(sorted_files, "temp_cnn_data.csv")
-
     # print("Transforming summaries from csv file to tfrecord")
     # csv_to_tfrecords("temp_cnn_data.csv", "Datasets/cnn_sorted_CL_1K_bucket_10_validate.tfrecord")
 
